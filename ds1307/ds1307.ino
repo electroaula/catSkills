@@ -14,6 +14,24 @@ const int SQW_INPUT_PIN = 6;  // Input pin to read SQW
 const int SQW_OUTPUT_PIN = 13; // LED to indicate SQW's state
 // Alerta **A4 és SDA** i **A5 és SCL** no és poden fer servir quan utiitzem I2C
 byte lastSecond = -1;
+// Set to 13:37:42 (1:37:42 PM)
+byte hour = 13;
+byte minute = 37;
+byte second = 42;
+// Set to Monday October 31, 2016:
+byte day = 2; // Sunday=1, Monday=2, ..., Saturday=7.
+byte date = 31; 
+byte month = 10;
+byte year = 16;
+// Read the time:
+byte s;
+byte m;
+byte h;
+// Read the day/date:
+byte dy;
+byte da;
+byte mo;
+byte yr;
 
 //********** Setup ****************************************************************
 void setup()
@@ -25,20 +43,15 @@ void setup()
 
 
   rtc.begin(); // Call rtc.begin() to initialize the library
-  // (Optional) Sets the SQW output to a 1Hz square wave.
-  // (Pull-up resistor is required to use the SQW pin.)
-  rtc.writeSQW(SQW_SQUARE_1);
-
-  // Now set the time...
-  // You can use the autoTime() function to set the RTC's clock and
-  // date to the compiliers predefined time. (It'll be a few seconds
-  // behind, but close!)
-  rtc.autoTime();
-  // Or you can use the rtc.setTime(s, m, h, day, date, month, year)
-  // function to explicitly set the time:
-  // e.g. 7:32:16 | Monday October 31, 2016:
-  //rtc.setTime(16, 24, 20, 3, 1, 5, 18);  // Uncomment to manually set time
+  
+  // (Optional) Sets the SQW output to a 1Hz square wave.(Pull-up resistor is required to use the SQW pin.)
+  rtc.writeSQW(SQW_SQUARE_1); //SQW_SQUARE_1,SQW_SQUARE_4K,SQW_SQUARE_8K,SQW_SQUARE_32K,SQW_LOW,SQW_HIGH
+  
+  rtc.autoTime(); // You can use the autoTime() function to set the RTC
+  //rtc.setTime(second, minute, hour, day, date, month, year); // Uncomment to manually set time
+  
   // rtc.set12Hour(); // Use rtc.set12Hour to set to 12-hour mode
+  // rtc.set24Hour();  //to switch back to 24-hour mode
 }
 
 //********** Loop *****************************************************************
@@ -63,11 +76,22 @@ void loop()
 //********** Funcions *************************************************************
 void printTime()
 {
-  Serial.print(String(rtc.hour()) + ":"); // Print hour
-  if (rtc.minute() < 10) Serial.print('0'); // Print leading '0' for minute
-  Serial.print(String(rtc.minute()) + ":"); // Print minute
-  if (rtc.second() < 10) Serial.print('0'); // Print leading '0' for second
-  Serial.print(String(rtc.second())); // Print second
+  // Read the time:
+  s = rtc.second();
+  m = rtc.minute();
+  h = rtc.hour();
+  
+  // Read the day/date:
+  dy = rtc.day();
+  da = rtc.date();
+  mo = rtc.month();
+  yr = rtc.year();
+  
+  Serial.print(String(h) + ":"); // Print hour
+  if (m < 10) Serial.print('0'); // Print leading '0' for minute
+  Serial.print(String(m) + ":"); // Print minute
+  if (s < 10) Serial.print('0'); // Print leading '0' for second
+  Serial.print(String(s)); // Print second
 
   if (rtc.is12Hour()) // If we're in 12-hour mode
   {
@@ -83,6 +107,6 @@ void printTime()
   //Serial.print(rtc.dayC()); // Print day character
   //Serial.print(rtc.day()); // Print day integer (1-7, Sun-Sat)
   Serial.print(" - ");
-  Serial.print(String(rtc.date()) + "/" + String(rtc.month()) + "/"); // Print month
-  Serial.println(String(rtc.year()));        // Print year
+  Serial.print(String(da) + "/" + String(mo) + "/"); // Print month
+  Serial.println(String(yr));        // Print year
 }
