@@ -10,7 +10,7 @@
 
 //********** Variables TC74 *******************************************************
 int temperatura1;
-int address1 = B10010000;  //binary address of sensor 1
+int address1 = B1001111;  //binary address of sensor 1
 
 //********** Setup ****************************************************************
 void setup()
@@ -23,6 +23,7 @@ void setup()
 void loop()
 {
   temperatura1 = readTemp(address1);
+  Serial.println(temperatura1);
 }
 
 //********** Funcions *************************************************************
